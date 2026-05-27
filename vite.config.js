@@ -7,4 +7,5 @@ export default defineConfig({
     react(),
     tailwindcss(), // Add the plugin here
   ],
+  base: '/Gowtham_Portfolio/',
 })
