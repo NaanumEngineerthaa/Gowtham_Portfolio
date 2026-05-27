@@ -66,7 +66,7 @@ const LandingPage = () => {
                     </p>
 
                     {/* Main Title: Enforced white color, maximum font weight */}
-                    <h1 className="text-[2.5rem] md:text-[2.5rem] lg:text-[4.5rem] font-black text-white leading-[1.05] tracking-tight mb-6">
+                    <h1 className="text-[5.5rem] md:text-[5.5rem] lg:text-[7.5rem] tracking-wide font-tusker text-white leading-[1.05] mb-6">
                         I'M A FULLSTACK<br />DEVELOPER
                     </h1>
 

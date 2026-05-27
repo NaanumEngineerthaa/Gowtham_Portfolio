@@ -1,13 +1,29 @@
-/* 1. Imports MUST go first */
 @import "tailwindcss";
-/* @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700;800;900&display=swap'); */
 
-/* 2. Themes go second */
-@theme {
-  --font-sans: 'Poppins', ui-sans-serif, system-ui, sans-serif;
+/* 1. Load the local Tusker Grotesk font file */
+@font-face {
+  font-family: 'TuskerGrotesk';
+  /* Make sure this path exactly matches your actual file name! */
+  src: url('./assets/fonts/TuskerGrotesk-3800Super.otf') format('opentype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
 }
 
-/* 3. Standard CSS goes last */
+/* 2. Add it to Tailwind's theme system */
+@theme {
+  --font-sans: 'Poppins', ui-sans-serif, system-ui, sans-serif;
+  
+  /* This creates a specific 'font-tusker' class for your titles */
+  --font-tusker: 'TuskerGrotesk', sans-serif; 
+  /* --- YOUR CENTRAL THEME COLORS --- */
+  /* This is a bright, neon violet */
+  --color-primary: #8b5cf6; 
+  
+  /* This is a slightly darker violet for hover effects */
+  --color-primary-hover: #7c3aed;
+}
+
 body {
   background-color: #0e0e0e;
   color: white;
