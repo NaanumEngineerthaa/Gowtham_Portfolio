@@ -1,0 +1,12 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700;800;900&display=swap');
+
+@theme {
+  /* This tells Tailwind to use Poppins as the default font everywhere */
+  --font-sans: 'Poppins', ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  background-color: #0e0e0e;
+  color: white;
+}
