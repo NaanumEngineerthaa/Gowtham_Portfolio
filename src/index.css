@@ -19,6 +19,39 @@
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
+
+/* =========================================
+   CUSTOM SCROLLBAR STYLING 
+   ========================================= */
+
+/* 1. For Firefox & Modern Browsers */
+html ,body {
+  /* First color is the "thumb" (draggable part), second is the "track" (background) */
+  scrollbar-color: var(--color-primary) #0e0e0e;
+  scrollbar-width: thin; 
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+
+}
+
+/* 2. For Chrome, Safari, and Edge (Webkit) */
+::-webkit-scrollbar {
+  width: 10px; /* Width of the vertical scrollbar */
+  height: 10px; /* Height of the horizontal scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: #0e0e0e; /* Perfectly matches your dark background */
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary); /* Your glowing violet color */
+  border-radius: 10px; /* Makes the scrollbar nicely rounded */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary-hover); /* Gets brighter when you hover over it! */
+}
 /* 2. Add it to Tailwind's theme system */
 @theme {
   --font-sans: 'Poppins', ui-sans-serif, system-ui, sans-serif;

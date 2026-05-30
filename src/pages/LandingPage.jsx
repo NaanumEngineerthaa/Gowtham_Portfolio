@@ -1,5 +1,8 @@
 import React from 'react';
-import { X } from 'lucide-react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Autoplay } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
 import { FaInstagram, FaGithub, FaLinkedin, FaYoutube, FaPaperPlane, FaReact, FaJsSquare, FaCss3Alt, FaFigma, FaNodeJs } from 'react-icons/fa';// Add this line to import your new component!
 // (Adjust the '../' path if your LandingPage is not inside a 'pages' folder)
 import ProjectCard from '../components/ProjectCard';
@@ -27,37 +30,6 @@ const LandingPage = () => {
                         transform: ' translateX(10%) scaleY(3) scaleX(-3) rotate(40deg)', 
                     }}
                 ></div>
-
-                {/* Navigation Bar */}
-                <nav className="relative z-10 flex items-center justify-between px-8 py-8 md:px-16 w-full max-w-[1600px] mx-auto">
-                    {/* Logo */}
-                    <div className="text-xl tracking-wide">
-                        <span className="font-bold text-white">NAANUM </span>
-                        <span className="font-light text-gray-400">ENGINEERTHA</span>
-                    </div>
-
-                    {/* Desktop Menu & Icons */}
-                    <div className="hidden md:flex items-center space-x-12">
-                        <div className="flex space-x-8 text-[15px] font-medium text-gray-300">
-                            <a href="#home" className="hover:text-white transition-colors">Home</a>
-                            <a href="#projects" className="hover:text-white transition-colors">Projects</a>
-                            <a href="#about" className="hover:text-white transition-colors">About</a>
-                            <a href="#contacts" className="hover:text-white transition-colors">Contacts</a>
-                        </div>
-
-                        {/* Social Icons */}
-                        <div className="flex space-x-5 text-white">
-                            <a href="#" className="hover:text-gray-400 transition-colors"><FaInstagram size={18} /></a>
-                            <a href="#" className="hover:text-gray-400 transition-colors"><FaGithub size={18} /></a>
-                            <a href="#" className="hover:text-gray-400 transition-colors"><FaLinkedin size={18} /></a>
-                        </div>
-                    </div>
-
-                    {/* Mobile Menu Toggle */}
-                    <div className="md:hidden text-white">
-                        <button><X size={24} /></button>
-                    </div>
-                </nav>
 
                 {/* Hero Section */}
                 <main className="relative z-10 flex flex-col md:flex-row items-center justify-between px-8 md:px-16 flex-grow max-w-[100vw] mx-auto w-full">
@@ -100,16 +72,17 @@ const LandingPage = () => {
 
 
             {/* We wrap both sections in a single dark container */}
-            <div id="about" className="w-full bg-[#0e0e0e] flex flex-col font-sans overflow-hidden">
+            <div id="" className="w-full bg-[#0e0e0e] flex flex-col font-sans overflow-hidden">
               
               {/* =========================================
                   SECTION 1: The Giant Typography Intro 
                   ========================================= */}
               <section className="relative min-h-screen flex flex-col items-center justify-center w-full px-6">
                 
-                {/* Background Outlined Text (Watermark) */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center overflow-hidden z-0 pointer-events-none opacity-30">
-                    {/* We use an arbitrary Tailwind class for the text-stroke outline effect */}
+               {/* Background Outlined Text (Watermark) */}
+                {/* ✅ Added mask-image to fade the left and right edges! */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center overflow-hidden z-0 pointer-events-none opacity-30 [mask-image:linear-gradient(to_right,transparent,black_20%,black_80%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_20%,black_80%,transparent)]">
+                    
                     <h1 className="text-[8rem] md:text-[14rem] lg:text-[18rem] font-tusker text-primary/8 whitespace-nowrap leading-[0.85] [-webkit-text-stroke:2px_var(--color-primary)]">
                         UI DESIGNER UI DESIGNER
                     </h1>
@@ -176,13 +149,11 @@ const LandingPage = () => {
                   </section>
                  </div>  
                   {/* =========================================
-                  SECTION 3: Recent Projects (Slide to View)
+                  SECTION 3: Recent Projects (Swiper Slider)
                   ========================================= */}
-              <section id="projects" className="w-full flex flex-col items-center justify-center px-6 py-6 md:px-16 relative z-20">
-                  {/* Dark Container for Projects */}
-                  <div className="w-full max-w-[90vw] rounded-xl p-8 shadow-2xl flex flex-col">
+              <section id="" className="w-full flex flex-col items-center justify-center px-6 py-1 md:px-1 relative z-20">
+                  <div className="w-[95vw] rounded-md p-8 shadow-2xl flex flex-col">
                       
-                      {/* Projects Header */}
                       <div className="flex justify-between bg-[#1a1a1a] rounded-md items-end mb-8 p-8">
                           <h2 className="text-[2rem] md:text-[3rem] leading-none tracking-wide font-tusker text-white">
                               Recent Projects
@@ -192,51 +163,86 @@ const LandingPage = () => {
                           </a>
                       </div>
 
-                      {/* Cards Container (Horizontal Scroll) */}
-                      {/* overflow-x-auto enables horizontal scrolling, snap-x makes it snap smoothly */}
-                      <div className="flex overflow-x-auto gap-6 pb-6 snap-x snap-mandatory hide-scrollbar">
-                          
-                          <ProjectCard 
-                              imagePlaceholder="linear-gradient(45deg, #4ade80, #064e3b)"
-                              title="Portfolio"
-                              role="Frontend"
-                              description="Developed to showcase my skills in web development, my portfolio website exemplifies proficiency in technologies such as ReactJS, CSS, and Figma."
-                              techStack={[FaReact, FaJsSquare, FaCss3Alt, FaFigma]}
-                          />
-                          
-                          <ProjectCard 
-                              imagePlaceholder="linear-gradient(45deg, #3b82f6, #1e3a8a)"
-                              title="Weather App"
-                              role="Full Stack"
-                              description="Developed a full-stack weather app using NodeJS/Express for server-side logic and ReactJS/Handlebars for interactive frontend, delivering real-time data."
-                              techStack={[FaReact, FaNodeJs, FaJsSquare, FaFigma]}
-                          />
+                      {/* Swiper Implementation */}
+                      <div className="w-full relative ">
+                          <Swiper
+                              modules={[Navigation, Autoplay]}
+                              spaceBetween={24}
+                              slidesPerView={1}
+                              // 1. Centers the active slide on mobile
+                              centeredSlides={false} 
+                              // 2. Centers the whole grid if you have fewer projects than the screen can fit
+                              centerInsufficientSlides={true}
+                              navigation={true}
+                              autoplay={{ delay: 2000, disableOnInteraction: true }}
+                              breakpoints={{
+                                  640: { slidesPerView: 1, spaceBetween: 24 },
+                                  768: { slidesPerView: 2, spaceBetween: 24 },
+                                  1024: { slidesPerView: 3, spaceBetween: 32 },
+                                  1440: { slidesPerView: 4, spaceBetween: 32 },
+                              }}
+                              className="!pb-4 !px-6 "
+                          >
+                              <SwiperSlide>
+                                  <ProjectCard 
+                                      imagePlaceholder="linear-gradient(45deg, #4ade80, #064e3b)"
+                                      title="Portfolio"
+                                      role="Frontend"
+                                      description="Developed to showcase my skills in web development, my portfolio website exemplifies proficiency in technologies such as ReactJS, CSS, and Figma."
+                                      techStack={[FaReact, FaJsSquare, FaCss3Alt, FaFigma]}
+                                  />
+                              </SwiperSlide>
+                              
+                              <SwiperSlide>
+                                  <ProjectCard 
+                                      imagePlaceholder="linear-gradient(45deg, #3b82f6, #1e3a8a)"
+                                      title="Weather App"
+                                      role="Full Stack"
+                                      description="Developed a full-stack weather app using NodeJS/Express for server-side logic and ReactJS/Handlebars for interactive frontend, delivering real-time data."
+                                      techStack={[FaReact, FaNodeJs, FaJsSquare, FaFigma]}
+                                  />
+                              </SwiperSlide>
 
-                          <ProjectCard 
-                              imagePlaceholder="linear-gradient(45deg, #a855f7, #4c1d95)"
-                              title="Cred Clone"
-                              role="Frontend"
-                              description="Crafted a responsive CRED Landing Page clone using ReactJS for modularity and interactivity, styled with CSS to match the original design."
-                              techStack={[FaReact, FaJsSquare, FaCss3Alt, FaFigma]}
-                          />
+                              <SwiperSlide>
+                                  <ProjectCard 
+                                      imagePlaceholder="linear-gradient(45deg, #a855f7, #4c1d95)"
+                                      title="Cred Clone"
+                                      role="Frontend"
+                                      description="Crafted a responsive CRED Landing Page clone using ReactJS for modularity and interactivity, styled with CSS to match the original design."
+                                      techStack={[FaReact, FaJsSquare, FaCss3Alt, FaFigma]}
+                                  />
+                              </SwiperSlide>
 
+                              <SwiperSlide>
+                                  <ProjectCard 
+                                      imagePlaceholder="linear-gradient(45deg, #a855f7, #4c1d95)"
+                                      title="Game developer"
+                                      role="Frontend"
+                                      description="Crafted a responsive CRED Landing Page clone using ReactJS for modularity and interactivity, styled with CSS to match the original design."
+                                      techStack={[FaReact, FaJsSquare, FaCss3Alt, FaFigma]}
+                                  />
+                              </SwiperSlide>
+                              
+                              {/* Add as many <SwiperSlide> wrappers as you need here! */}
+
+                          </Swiper>
                       </div>
+
                   </div>
               </section>
-
               {/* =========================================
                   SECTION 4: Get in Touch 
                   ========================================= */}
-              <section id="contacts" className="w-full flex items-center justify-center px-6 pt-6 md:px-16 relative z-20">
+              <section id="" className="w-full flex items-center justify-center px-6 pt-6 py-5 md:px-16 relative z-20">
                 {/* Notice this box uses bg-primary to perfectly match the About box! */}
-                <div className="w-full max-w-[90vw] bg-primary text-white rounded-xl p-8 md:p-12 shadow-2xl flex flex-col md:flex-row justify-between items-center md:items-start gap-8">
+                <div className="w-full max-w-[90vw] bg-primary text-white rounded-md p-8 md:p-12 shadow-2xl flex flex-col md:flex-row justify-between items-center md:items-start gap-8">
                     
                     {/* Left Side: Text */}
                     <div className="flex-1 text-center md:text-left">
                         <h2 className="text-[4rem] md:text-[5rem] leading-none tracking-wide font-tusker mb-4">
                             Get in Touch
                         </h2>
-                        <p className="text-[16px] md:text-[18px] font-medium max-w-lg leading-relaxed">
+                        <p className="text-[14px] md:text-[16px] font-medium max-w-lg leading-relaxed">
                             If you are interested in my work or want to provide feedback about this website, I am open to exchanging ideas.
                         </p>
                     </div>
@@ -260,6 +266,8 @@ const LandingPage = () => {
 
                 </div>
               </section>
+
+             
             
                  
         </>
