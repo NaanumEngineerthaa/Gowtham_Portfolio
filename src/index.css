@@ -31,6 +31,7 @@ html ,body {
   scrollbar-width: thin; 
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
+  scroll-behavior: smooth;
 
 }
 

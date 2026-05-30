@@ -7,11 +7,14 @@ import About from './pages/About';
 import Footer from './components/Footer';
 import Projects from './pages/Projects';
 import ProjectDetail from './pages/ProjectDetail';
+import Contact from './pages/Contact';
+import ScrollToTop from './components/ScrollToTop';
 
 function App() {
   return (
     // 2. Wrap everything in the Router
     <Router basename="/Gowtham_Portfolio">
+      <ScrollToTop />
       <div className="bg-[#0e0e0e] min-h-screen font-sans">
         
         {/* Navbar stays outside the Routes so it always shows on top! */}
@@ -29,6 +32,8 @@ function App() {
 
           {/* ✅ 2. Add the dynamic route for the project details */}
           <Route path="/project/:id" element={<ProjectDetail />} />
+
+          <Route path="/contact" element={<Contact />} />
 
           {/* ✅ NEW: The Catch-All Route 
               If the URL is /Gowtham_Portfolio/ or anything else misspelled, 

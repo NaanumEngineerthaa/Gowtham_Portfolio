@@ -3,13 +3,15 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
-import { FaInstagram, FaGithub, FaLinkedin, FaYoutube, FaPaperPlane, FaReact, FaJsSquare, FaCss3Alt, FaFigma, FaNodeJs } from 'react-icons/fa';// Add this line to import your new component!
+import { FaInstagram, FaGithub, FaLinkedin, FaYoutube, FaPaperPlane, FaReact, FaJsSquare, FaCss3Alt, FaFigma, FaNodeJs, FaLongArrowAltDown } from 'react-icons/fa';// Add this line to import your new component!
 // (Adjust the '../' path if your LandingPage is not inside a 'pages' folder)
 import ProjectCard from '../components/ProjectCard';
 
 // Import your avatar and your new smoke background here
 import main_hero from '../assets/Main_Hero.png';
 import smoke_bg from '../assets/smoke-bg.png'; // Uncomment this once you add the image!
+
+import { Link } from 'react-router-dom';
 
 const LandingPage = () => {
     return (
@@ -51,10 +53,10 @@ const LandingPage = () => {
 
                         {/* Thicker underline button */}
                         <a
-                            href="#projects"
-                            className="inline-block text-[20px] font-bold pb-2 border-b-[3px] border-white text-white hover:text-gray-300 hover:border-gray-300 transition-all"
+                            href="#section_2"
+                            className="inline-flex items-center gap-2 text-[20px] font-bold pb-2 border-b-[3px] border-white text-white hover:text-gray-300 hover:border-gray-300 transition-all"
                         >
-                            View My Projects
+                            Scroll Down <FaLongArrowAltDown />
                         </a>
                     </div>
 
@@ -72,7 +74,7 @@ const LandingPage = () => {
 
 
             {/* We wrap both sections in a single dark container */}
-            <div id="" className="w-full bg-[#0e0e0e] flex flex-col font-sans overflow-hidden">
+            <div id="section_2" className="w-full bg-[#0e0e0e] flex flex-col font-sans overflow-hidden">
               
               {/* =========================================
                   SECTION 1: The Giant Typography Intro 
@@ -138,11 +140,13 @@ const LandingPage = () => {
                         and bring experience in agile methodologies. Beyond coding, I enjoy exploring new technologies and 
                         building tools that solve real-world problems. Let's connect and bring your digital visions to life.
                       </p>
-            
+
                       <div className="flex justify-end w-full mt-auto">
+                        <Link to="/about">
                         <button className="bg-white text-primary px-8 py-3 rounded-md font-semibold text-md hover:bg-black/20 hover:text-white transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1">
                           More...
                         </button>
+                        </Link>
                       </div>
             
                     </div>
@@ -158,9 +162,9 @@ const LandingPage = () => {
                           <h2 className="text-[2rem] md:text-[3rem] leading-none tracking-wide font-tusker text-white">
                               Recent Projects
                           </h2>
-                          <a href="#" className="text-gray-400 hover:text-primary transition-colors text-sm md:text-base mb-2 font-medium">
+                          <Link to="/projects" className="text-gray-400 hover:text-primary transition-colors text-sm md:text-base mb-2 font-medium">
                               See all &rarr;
-                          </a>
+                          </Link>
                       </div>
 
                       {/* Swiper Implementation */}
@@ -259,9 +263,11 @@ const LandingPage = () => {
                             </div>
                         </div>
 
+                        <Link to="/contact">
                         <button className="flex items-center gap-2 bg-transparent border-2 border-white text-white px-8 py-3 rounded-full font-bold text-lg hover:bg-white hover:text-primary transition-all shadow-lg hover:shadow-xl">
                             Contact Me <FaPaperPlane />
                         </button>
+                        </Link>
                     </div>
 
                 </div>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { X } from 'lucide-react';
-import { FaInstagram, FaGithub, FaLinkedin } from 'react-icons/fa';
+import { FaInstagram, FaGithub, FaLinkedin, FaGooglePlay } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
 const Navbar = () => {
@@ -39,14 +39,15 @@ const Navbar = () => {
                                     <Link to="/" className="hover:text-white transition-colors">Home</Link>
                                     <Link to="/projects" className="hover:text-white transition-colors">Projects</Link>
                                     <Link to="/about" className="hover:text-white transition-colors">About</Link>
-                                    <a href="#contacts" className="hover:text-white transition-colors">Contacts</a>
+                                    <Link to="/contact" className="hover:text-white transition-colors">Contacts</Link>
                                 </div>
 
                                 {/* Social Icons */}
                                 <div className="flex space-x-5 text-white">
-                                    <a href="#" className="hover:text-gray-400 transition-colors"><FaInstagram size={18} /></a>
+                                    {/* <a href="#" className="hover:text-gray-400 transition-colors"><FaInstagram size={18} /></a> */}
                                     <a href="#" className="hover:text-gray-400 transition-colors"><FaGithub size={18} /></a>
                                     <a href="#" className="hover:text-gray-400 transition-colors"><FaLinkedin size={18} /></a>
+                                    <a href="#" className="hover:text-gray-400 transition-colors"><FaGooglePlay size={18} /></a>
                                 </div>
                             </div>
 
