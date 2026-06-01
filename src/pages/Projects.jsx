@@ -1,10 +1,60 @@
-import React from 'react';
+// import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ProjectCard from '../components/ProjectCard';
 // Add whichever icons you need for your tech stack
 import { FaReact, FaJsSquare, FaCss3Alt, FaFigma, FaNodeJs, FaMobileAlt } from 'react-icons/fa';
 import { SiTailwindcss, SiExpress, SiMongodb } from 'react-icons/si';
 
+
+// 1. Import Firebase fetching tools
+import { collection, getDocs } from "firebase/firestore"; 
+import { db } from '../firebase'; // Make sure this points to your firebase.js file!
+
+// 3. The Icon Map: This translates the text from your database (e.g., "FaReact") into the actual visual icon component.
+const iconMap = {
+  FaReact: FaReact,
+  FaJsSquare: FaJsSquare,
+  FaCss3Alt: FaCss3Alt,
+  FaFigma: FaFigma,
+  FaNodeJs: FaNodeJs,
+  FaMobileAlt: FaMobileAlt,
+  SiTailwindcss: SiTailwindcss,
+  SiExpress: SiExpress,
+  SiMongodb: SiMongodb
+};
+
+
 const Projects = () => {
+
+
+  // 4. Create state variables to hold the live data and track the loading status
+  const [projectList, setProjectList] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // 5. Fetch data exactly once when the page loads
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "projects"));
+        const projectsData = [];
+        
+        // Loop through the database documents and push them into our array
+        querySnapshot.forEach((doc) => {
+          projectsData.push({ id: doc.id, ...doc.data() });
+        });
+        
+        // Save the data to React state
+        setProjectList(projectsData);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching projects: ", error);
+        setLoading(false);
+      }
+    };
+
+    fetchProjects();
+  }, []);  
+
   return (
     // Main Wrapper: Added pt-32 to push content down below the floating Navbar
     <div className="min-h-screen bg-[#0e0e0e] text-white pt-32 pb-20 px-6 md:px-16 flex flex-col items-center font-sans">
@@ -15,72 +65,36 @@ const Projects = () => {
           Projects
         </h1>
       </div>
+      
 
-      {/* 2. PROJECTS GRID */}
-      {/* grid-cols-1 (mobile), md:grid-cols-2 (tablet), lg:grid-cols-3 (desktop) */}
-      <div className="w-full max-w-[1200px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        
-        {/* Card 1 */}
-        <ProjectCard 
-            id="portfolio"
-            imagePlaceholder="linear-gradient(45deg, #4ade80, #064e3b)"
-            title="Portfolio"
-            role="Frontend"
-            description="Developed to showcase my skills in web development, my portfolio website exemplifies proficiency in modern UI/UX design and React."
-            techStack={[FaReact, FaJsSquare, FaCss3Alt, FaFigma]}
-        />
-        
-        {/* Card 2 */}
-        <ProjectCard
-            id="weather-app" 
-            imagePlaceholder="linear-gradient(45deg, #3b82f6, #1e3a8a)"
-            title="Weather App"
-            role="Full Stack"
-            description="Developed a full-stack weather app using NodeJS/Express for server-side logic and ReactJS for an interactive frontend, delivering real-time data."
-            techStack={[FaReact, FaNodeJs, SiExpress, FaFigma]}
-        />
+      {/* 2. DYNAMIC PROJECTS GRID (Replaced the hardcoded cards here!) */}
+      {loading ? (
+        <div className="text-primary text-2xl font-tusker animate-pulse mt-20">Loading Database...</div>
+      ) : (
+        <div className="w-full max-w-[1200px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          
+          {/* Loop through the live data to create the cards */}
+          {projectList.map((project) => {
+            
+            // Map the array of text strings from Firebase into an array of actual icon components
+            const mappedIcons = (project.techStack || []).map(iconName => iconMap[iconName]).filter(Boolean);
 
-        {/* Card 3 */}
-        <ProjectCard
-            id="cred-clone" 
-            imagePlaceholder="linear-gradient(45deg, #a855f7, #4c1d95)"
-            title="Cred Clone"
-            role="Frontend"
-            description="Crafted a responsive CRED Landing Page clone using ReactJS for modularity and interactivity, styled to flawlessly match the original design."
-            techStack={[FaReact, FaJsSquare, SiTailwindcss, FaFigma]}
-        />
+            return (
+              <ProjectCard 
+                  key={project.id}
+                  id={project.id}
+                  imagePlaceholder={project.bg || "linear-gradient(45deg, #141417, #22222a)"}
+                  title={project.title}
+                  role={project.role}
+                  description={project.description}
+                  techStack={mappedIcons} 
+              />
+            );
+          })}
 
-        {/* Card 4 */}
-        <ProjectCard
-            id="mobile-app" 
-            imagePlaceholder="linear-gradient(45deg, #ef4444, #7f1d1d)"
-            title="Xynema"
-            role="Mobile App"
-            description="Designing and developing a comprehensive mobile application dedicated to streamlining the booking experience for movie and event tickets."
-            techStack={[FaReact, FaMobileAlt, FaFigma]}
-        />
+        </div>
+      )}
 
-        {/* Card 5 */}
-        <ProjectCard
-            id="tms-application" 
-            imagePlaceholder="linear-gradient(45deg, #f59e0b, #78350f)"
-            title="TMS Application"
-            role="Full Stack"
-            description="Collaborating on a robust Theater Management System, integrating custom UI elements and strict version control for seamless operation."
-            techStack={[FaReact, FaNodeJs, SiMongodb]}
-        />
-
-        {/* Card 6 */}
-        <ProjectCard
-            id="auth-system" 
-            imagePlaceholder="linear-gradient(45deg, #06b6d4, #164e63)"
-            title="Auth System"
-            role="Full Stack"
-            description="A secure user authentication framework utilizing JWT tokens, encrypted password hashing, and protected frontend routing."
-            techStack={[FaReact, FaNodeJs, SiExpress]}
-        />
-
-      </div>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import React from 'react';
+// import React from 'react';
 // 1. Import the routing tools
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
@@ -10,7 +10,39 @@ import ProjectDetail from './pages/ProjectDetail';
 import Contact from './pages/Contact';
 import ScrollToTop from './components/ScrollToTop';
 
+import React, { useEffect } from 'react'; // ✅ 1. Added useEffect
+
+// ✅ 2. Import Firebase tools for our test
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from './firebase';
+
 function App() {
+// ✅ 3. THE FIREBASE TEST BLOCK
+  useEffect(() => {
+    const testDatabaseConnection = async () => {
+      try {
+        console.log("🔥 Attempting to connect to Firebase...");
+        
+        // Try to grab the "projects" collection
+        const querySnapshot = await getDocs(collection(db, "projects"));
+        
+        if (querySnapshot.empty) {
+          console.log("✅ Connected successfully, but the 'projects' collection is empty!");
+        } else {
+          console.log("✅ Connected successfully! Found these projects:");
+          // Loop through whatever it finds and print it
+          querySnapshot.forEach((doc) => {
+            console.log(`- ID: ${doc.id} | Data:`, doc.data());
+          });
+        }
+      } catch (error) {
+        console.error("❌ Firebase Connection Error:", error);
+      }
+    };
+
+    testDatabaseConnection();
+  }, []); // Empty array means this runs exactly once when you open the website
+
   return (
     // 2. Wrap everything in the Router
     <Router basename="/Gowtham_Portfolio">
