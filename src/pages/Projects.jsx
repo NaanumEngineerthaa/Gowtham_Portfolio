@@ -83,6 +83,7 @@ const Projects = () => {
               <ProjectCard 
                   key={project.id}
                   id={project.id}
+                  mainImage={project.mainImage}
                   imagePlaceholder={project.bg || "linear-gradient(45deg, #141417, #22222a)"}
                   title={project.title}
                   role={project.role}

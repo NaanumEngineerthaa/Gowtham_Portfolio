@@ -1,57 +1,78 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { FaArrowLeft, FaReact, FaJsSquare, FaCss3Alt, FaFigma, FaGithub, FaDesktop, FaNodeJs, FaMobileAlt } from 'react-icons/fa';
 import { SiExpress, SiTailwindcss, SiMongodb } from 'react-icons/si';
 
-// ==========================================
-// 1. THE PROJECT DATABASE
-// This object holds the unique data for every project.
-// ==========================================
-const projectDatabase = {
-  "portfolio": {
-    title: "Portfolio",
-    role: "Frontend",
-    bg: "linear-gradient(45deg, #4ade80, #064e3b)",
-    description: "This project is a portfolio website developed using React.js. The website is designed to showcase the user's skills, projects, and services. It features a modern and clean design with smooth navigation and responsive layout.",
-    techStack: [FaReact, FaJsSquare, FaCss3Alt, FaFigma],
-    features: [
-      { title: "Responsive Design", desc: "The website is designed to be responsive, ensuring a seamless experience across various devices and screen sizes." },
-      { title: "Modern UI/UX", desc: "The website features a modern and clean user interface, providing a pleasant user experience. It uses a consistent color scheme and typography." }
-    ]
-  },
-  "weather-app": {
-    title: "Weather App",
-    role: "Full Stack",
-    bg: "linear-gradient(45deg, #3b82f6, #1e3a8a)",
-    description: "Developed a full-stack weather app using NodeJS/Express for server-side logic and ReactJS for an interactive frontend, delivering real-time weather data.",
-    techStack: [FaReact, FaNodeJs, SiExpress, FaFigma],
-    features: [
-      { title: "Real-time API Integration", desc: "Fetches live weather data securely from third-party APIs based on user search queries." },
-      { title: "Dynamic UI Updates", desc: "The background and UI elements adapt dynamically based on the current weather conditions (e.g., rain, sunny, cloudy)." }
-    ]
-  },
-  "xynema": {
-    title: "Xynema",
-    role: "Mobile App",
-    bg: "linear-gradient(45deg, #ef4444, #7f1d1d)",
-    description: "Designing and developing a comprehensive mobile application dedicated to streamlining the booking experience for movie and event tickets.",
-    techStack: [FaReact, FaMobileAlt, FaFigma],
-    features: [
-      { title: "Seamless Ticketing", desc: "Allows users to browse movies, select seats interactively, and process payments in one unified flow." },
-      { title: "Custom UI Design", desc: "Features custom-designed branding, icons, and a highly polished dark-mode interface built for mobile screens." }
-    ]
-  }
-  // Add your other projects ("cred-clone", "tms-app") here using the exact same format!
+// ✅ 1. ADD SWIPER IMPORTS HERE
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Autoplay } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+
+// ✅ 1. Import Firebase tools for fetching a single document
+import { doc, getDoc } from "firebase/firestore";
+import { db } from '../firebase'; 
+
+// ✅ 2. Bring back the Icon Map to convert DB text strings into real icons
+const iconMap = {
+  FaReact: FaReact,
+  FaJsSquare: FaJsSquare,
+  FaCss3Alt: FaCss3Alt,
+  FaFigma: FaFigma,
+  FaNodeJs: FaNodeJs,
+  FaMobileAlt: FaMobileAlt,
+  SiTailwindcss: SiTailwindcss,
+  SiExpress: SiExpress,
+  SiMongodb: SiMongodb
 };
 
 const ProjectDetail = () => {
-  // Grab the ID from the URL (e.g., "xynema")
+  // Grab the ID from the URL (e.g., "xynema")[cite: 8]
   const { id } = useParams();
 
-  // Look up the project in our database
-  const project = projectDatabase[id];
+  // ✅ 3. Create state for this specific project and a loading state
+  const [project, setProject] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // If someone types a weird URL, show this error screen instead of crashing
+  // ✅ 1. ADD THIS LINE: State to track which image is open in fullscreen
+  const [selectedImage, setSelectedImage] = useState(null);
+
+
+  // ✅ 4. Fetch the single project from Firestore when the page loads
+  useEffect(() => {
+    const fetchSingleProject = async () => {
+      try {
+        // Point exactly to the document with this URL ID in the "projects" collection
+        const docRef = doc(db, "projects", id);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          setProject(docSnap.data()); // Save the DB data to state
+        } else {
+          console.log("No such document!");
+          setProject(null);
+        }
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching project:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchSingleProject();
+  }, [id]); // This ensures it refetches if the ID in the URL changes
+
+
+  // ✅ 5. Show a loading screen while waiting for Firebase
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#0e0e0e] text-white flex flex-col items-center justify-center">
+        <h1 className="text-3xl font-tusker animate-pulse text-primary">Loading Project...</h1>
+      </div>
+    );
+  }
+
+  // If someone types a weird URL, show this error screen instead of crashing[cite: 8]
   if (!project) {
     return (
       <div className="min-h-screen bg-[#0e0e0e] text-white flex flex-col items-center justify-center">
@@ -61,9 +82,9 @@ const ProjectDetail = () => {
     );
   }
 
-  // ==========================================
-  // 2. THE DYNAMIC HTML TEMPLATE
-  // ==========================================
+  // ✅ 6. Map the icons from the database array just like we did on the Projects page
+  const mappedIcons = (project.techStack || []).map(iconName => iconMap[iconName]).filter(Boolean);
+
   return (
     <div className="min-h-screen bg-[#0e0e0e] text-white pt-32 pb-20 px-6 md:px-16 flex flex-col items-center font-sans">
       <div className="w-full max-w-[1200px]">
@@ -76,13 +97,21 @@ const ProjectDetail = () => {
         {/* HERO SECTION */}
         <div className="bg-[#141417] rounded-md p-6 lg:p-10 shadow-xl border border-white/5 flex flex-col lg:flex-row gap-10">
           
-          {/* Dynamic Background and Title */}
-          <div 
-            className="w-full lg:w-[55%] aspect-video rounded-md flex items-center justify-center font-tusker text-4xl tracking-widest text-black shadow-inner overflow-hidden relative" 
-            style={{ background: project.bg }}
-          >
-            {project.title.toUpperCase()}
-          </div>
+          {/* ✅ 7. Dynamic Background Image or Title Gradient */}
+          {project.mainImage ? (
+            <img 
+              src={project.mainImage} 
+              alt={project.title} 
+              className="w-full lg:w-[55%] aspect-video rounded-md object-cover shadow-inner" 
+            />
+          ) : (
+            <div 
+              className="w-full lg:w-[55%] aspect-video rounded-md flex items-center justify-center font-tusker text-4xl tracking-widest text-black shadow-inner overflow-hidden relative" 
+              style={{ background: project.bg || "linear-gradient(45deg, #141417, #22222a)" }}
+            >
+              {project.title.toUpperCase()}
+            </div>
+          )}
 
           <div className="w-full lg:w-[45%] flex flex-col justify-center">
             {/* Dynamic Text Details */}
@@ -95,17 +124,17 @@ const ProjectDetail = () => {
 
             <h3 className="text-xl font-bold text-white mb-4">Tech Stack</h3>
             <div className="flex gap-3 text-3xl text-gray-300 mb-8">
-              {/* Dynamically loop through the icons */}
-              {project.techStack.map((Icon, index) => (
+              {/* ✅ 8. Use the mappedIcons array instead of the raw database text */}
+              {mappedIcons.map((Icon, index) => (
                 <Icon key={index} className="hover:text-primary transition-colors cursor-pointer" />
               ))}
             </div>
 
             <div className="flex gap-4">
-              <a href="#" className="flex-1 flex items-center justify-center gap-2 bg-primary text-white py-3 rounded-lg font-bold hover:bg-white hover:text-primary transition-colors shadow-lg">
+              <a href={project.demoLink || "#"} className="flex-1 flex items-center justify-center gap-2 bg-primary text-white py-3 rounded-lg font-bold hover:bg-white hover:text-primary transition-colors shadow-lg">
                 <FaDesktop /> Demo
               </a>
-              <a href="#" className="flex-1 flex items-center justify-center gap-2 bg-[#22222a] border border-white/10 text-white py-3 rounded-lg font-bold hover:bg-white hover:text-black transition-colors shadow-lg">
+              <a href={project.githubLink || "#"} className="flex-1 flex items-center justify-center gap-2 bg-[#22222a] border border-white/10 text-white py-3 rounded-lg font-bold hover:bg-white hover:text-black transition-colors shadow-lg">
                 <FaGithub /> GitHub
               </a>
             </div>
@@ -113,27 +142,123 @@ const ProjectDetail = () => {
         </div>
 
         {/* DYNAMIC FEATURES SECTION */}
-        <div className="bg-[#141417] rounded-md p-8 lg:p-10 shadow-xl border border-white/5 mt-8">
-          <h2 className="text-3xl font-bold text-primary mb-6">Main Features</h2>
+        {/* ✅ 9. Added a check in case a project doesn't have features yet */}
+        {project.features && project.features.length > 0 && (
+          <div className="bg-[#141417] rounded-md p-8 lg:p-10 shadow-xl border border-white/5 mt-8">
+            <h2 className="text-3xl font-bold text-primary mb-6">Main Features</h2>
+            
+            <ul className="space-y-6">
+              {/* Dynamically loop through the features list[cite: 8] */}
+              {project.features.map((feature, index) => (
+                <li key={index} className="flex flex-col gap-1">
+                  <div className="flex items-center gap-2 text-xl font-bold text-white">
+                    <span className="text-primary text-2xl">&bull;</span> {feature.title}:
+                  </div>
+                  <p className="text-gray-400 ml-6 leading-relaxed">
+                    {feature.desc}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* ✅ 10. DYNAMIC SCREENSHOTS GALLERY (Now with Swiper!) */}
+        {project.screenshots && project.screenshots.length > 0 && (
+          <div className="bg-[#141417] rounded-md p-8 lg:p-10 shadow-xl border border-white/5 mt-8">
+            <h2 className="text-3xl font-bold text-primary mb-6">Gallery</h2>
+            
+            <div className="w-full relative">
+              <Swiper
+                  modules={[Navigation, Autoplay]}
+                  spaceBetween={24}
+                  slidesPerView={1}
+                  centeredSlides={false} 
+                  centerInsufficientSlides={false}
+                  navigation={true}
+                  autoplay={{ delay: 2000, disableOnInteraction: true }}
+                  breakpoints={{
+                      640: { slidesPerView: 1, spaceBetween: 24 },
+                      768: { slidesPerView: 2, spaceBetween: 24 },
+                      1024: { slidesPerView: 3, spaceBetween: 32 },
+                      1440: { slidesPerView: 4, spaceBetween: 32 },
+                  }}
+                  className="!pb-4 !px-6"
+              >
+                  {/* Loop through the Firebase array and create a SwiperSlide for each image */}
+                  {project.screenshots.map((imgUrl, index) => (
+                    <SwiperSlide key={index}>
+                      <div className="overflow-hidden rounded-md border border-white/10 shadow-lg group h-full">
+                        <img 
+                          src={imgUrl} 
+                          alt={`${project.title} screenshot ${index + 1}`} 
+                          className="w-full h-full object-cover aspect-video cursor-pointer"
+                          onClick={() => setSelectedImage(imgUrl)} /* ✅ 2. ADD THIS onClick */
+                        />
+                      </div>
+                    </SwiperSlide>
+                  ))}
+              </Swiper>
+            </div>
+          </div>
           
-          <ul className="space-y-6">
-            {/* Dynamically loop through the features list */}
-            {project.features.map((feature, index) => (
-              <li key={index} className="flex flex-col gap-1">
-                <div className="flex items-center gap-2 text-xl font-bold text-white">
-                  <span className="text-primary text-2xl">&bull;</span> {feature.title}:
-                </div>
-                <p className="text-gray-400 ml-6 leading-relaxed">
-                  {feature.desc}
-                </p>
-              </li>
-            ))}
-          </ul>
-        </div>
+        )}
+        {/* ✅ 3. ADD THIS FULLSCREEN MODAL OVERLAY HERE */}
+        {selectedImage && (
+          <div 
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 md:p-10 backdrop-blur-sm cursor-zoom-out"
+            onClick={() => setSelectedImage(null)} // Close when clicking the background
+          >
+            {/* Close Button */}
+            <button 
+              className="absolute top-6 right-6 md:top-10 md:right-10 text-white text-5xl hover:text-primary transition-colors cursor-pointer"
+              onClick={() => setSelectedImage(null)}
+            >
+              &times;
+            </button>
+
+            {/* PREVIOUS Arrow Button */}
+            <button 
+              className="text-white text-5xl md:text-7xl hover:text-primary transition-colors cursor-pointer p-4 z-[201]"
+              onClick={(e) => {
+                e.stopPropagation(); // Stops the modal from closing
+                const currentIndex = project.screenshots.indexOf(selectedImage);
+                // If at the first image, loop back to the very last image. Otherwise, go back 1.
+                const prevIndex = currentIndex === 0 ? project.screenshots.length - 1 : currentIndex - 1;
+                setSelectedImage(project.screenshots[prevIndex]);
+              }}
+            >
+              &#10094; {/* This creates a bold < symbol */}
+            </button>
+
+            {/* The Fullscreen Image */}
+            <img 
+              src={selectedImage} 
+              alt="Fullscreen screenshot" 
+              className="max-w-full max-h-full object-contain rounded-md shadow-2xl cursor-default"
+              onClick={(e) => e.stopPropagation()} // Prevents the modal from closing if you click the image itself
+            />
+
+             {/* NEXT Arrow Button */}
+            <button 
+              className="text-white text-5xl md:text-7xl hover:text-primary transition-colors cursor-pointer p-4 z-[201]"
+              onClick={(e) => {
+                e.stopPropagation(); // Stops the modal from closing
+                const currentIndex = project.screenshots.indexOf(selectedImage);
+                // If at the last image, loop back to the first. Otherwise, go forward 1.
+                const nextIndex = currentIndex === project.screenshots.length - 1 ? 0 : currentIndex + 1;
+                setSelectedImage(project.screenshots[nextIndex]);
+              }}
+            >
+              &#10095; {/* This creates a bold > symbol */}
+            </button>
+          </div>
+        )}
 
       </div>
     </div>
   );
 };
+
 
 export default ProjectDetail;
