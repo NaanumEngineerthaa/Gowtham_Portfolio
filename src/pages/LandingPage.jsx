@@ -61,7 +61,7 @@ const LandingPage = () => {
                     <div className="flex-1 w-full z-20 flex flex-col items-center md:items-start text-center md:text-left justify-end md:justify-center pb-[3vh] sm:pb-[5vh] md:pb-0 h-full md:h-auto md:max-w-[80%] mt-auto md:mt-[-2%]">
                         
                         {/* Greeting: Cursive on mobile, standard on desktop */}
-                        <p className="text-3xl md:text-4xl font-wonderfulDay mb-[-8px] text-grey-500 tracking-wider drop-shadow-md z-20">
+                        <p className="text-3xl md:text-4xl font-wonderfulDay mb-[-8px] text-gray-300 tracking-wider drop-shadow-md z-20">
                             Hi, I'm Gowtham,
                         </p>
 
