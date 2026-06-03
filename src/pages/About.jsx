@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaInstagram, FaYoutube, FaGithub, FaLinkedin, FaBehance, FaHtml5, FaCss3Alt, FaReact, FaNodeJs, FaFigma } from 'react-icons/fa';
+import { FaInstagram, FaYoutube, FaGithub, FaLinkedin, FaBehance, FaHtml5, FaCss3Alt, FaReact, FaNodeJs, FaFigma, FaGooglePlay } from 'react-icons/fa';
 import { SiTailwindcss, SiJavascript, SiCplusplus } from 'react-icons/si';
 import { FiDownload } from 'react-icons/fi';
 import Hero from '../assets/Main_Hero.png'
@@ -70,7 +70,7 @@ const About = () => {
             <div className="flex gap-5 text-[2rem] text-primary">
                 <a href="#" className="hover:text-white transition-transform transform hover:scale-110"><FaInstagram /></a>
                 <a href="#" className="hover:text-white transition-transform transform hover:scale-110"><FaYoutube /></a>
-                <a href="#" className="hover:text-white transition-transform transform hover:scale-110"><FaBehance /></a>
+                <a href="#" className="hover:text-white transition-transform transform hover:scale-110"><FaGooglePlay /></a>
                 <a href="#" className="hover:text-white transition-transform transform hover:scale-110"><FaLinkedin /></a>
                 <a href="#" className="hover:text-white transition-transform transform hover:scale-110"><FaGithub /></a>
             </div>
