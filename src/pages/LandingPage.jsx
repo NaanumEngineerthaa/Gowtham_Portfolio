@@ -1,10 +1,10 @@
-import React from 'react';
+// import React from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
-import { FaInstagram, FaGithub, FaLinkedin, FaYoutube, FaPaperPlane, FaReact, FaJsSquare, FaCss3Alt, FaFigma, FaNodeJs, FaLongArrowAltDown, FaGooglePlay } from 'react-icons/fa';// Add this line to import your new component!
-// (Adjust the '../' path if your LandingPage is not inside a 'pages' folder)
+import { SiTailwindcss, SiExpress, SiMongodb } from 'react-icons/si';
+import { FaInstagram, FaGithub, FaLinkedin, FaYoutube, FaPaperPlane, FaReact, FaJsSquare, FaCss3Alt, FaFigma, FaNodeJs, FaLongArrowAltDown, FaGooglePlay, FaMobileAlt } from 'react-icons/fa';// (Adjust the '../' path if your LandingPage is not inside a 'pages' folder)
 import ProjectCard from '../components/ProjectCard';
 
 // Import your avatar and your new smoke background here
@@ -13,7 +13,76 @@ import smoke_bg from '../assets/smoke-bg.png'; // Uncomment this once you add th
 
 import { Link } from 'react-router-dom';
 
+// 1. Add useState and useEffect
+import React, { useState, useEffect } from 'react';
+// 3. Import Firebase tools (Notice we added 'query' and 'limit' here!)
+import { collection, getDocs, query, limit, getDoc, doc} from "firebase/firestore"; 
+import { db } from '../firebase';
+
+// 4. The Icon Map: Translates DB strings ("FaReact") into real React components
+const iconMap = {
+  FaReact: FaReact,
+  FaJsSquare: FaJsSquare,
+  FaCss3Alt: FaCss3Alt,
+  FaFigma: FaFigma,
+  FaNodeJs: FaNodeJs,
+  FaMobileAlt: FaMobileAlt,
+  SiTailwindcss: SiTailwindcss,
+  SiExpress: SiExpress,
+  SiMongodb: SiMongodb
+};
+
 const LandingPage = () => {
+    // A. State to hold our 4 projects
+    const [recentProjects, setRecentProjects] = useState([]);
+    // ✅ 1. Add state to hold the landing page content
+    const [pageContent, setPageContent] = useState(null);
+
+    // B. useEffect runs this code once when the page loads
+    useEffect(() => {
+        const fetchRecentProjects = async () => {
+            try {
+                // THE MAGIC HAPPENS HERE:
+                // Instead of just calling collection(), we wrap it in a query() 
+                // and tell Firebase to limit the results to 4 documents!
+                const q = query(collection(db, "projects"), limit(4));
+                
+                // We pass our specific query 'q' to getDocs
+                const querySnapshot = await getDocs(q);
+                const projectsData = [];
+                
+                querySnapshot.forEach((doc) => {
+                    projectsData.push({ id: doc.id, ...doc.data() });
+                });
+                
+                // Save the 4 projects to our state
+                setRecentProjects(projectsData);
+            } catch (error) {
+                console.error("Error fetching recent projects:", error);
+            }
+        };
+        // ✅ 2. Create the new fetch function for the page content
+        const fetchPageContent = async () => {
+            try {
+                // Point directly to the "landing_page" document inside the "content" collection
+                const docRef = doc(db, "content", "landing_page");
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    // Save the data to our React state
+                    setPageContent(docSnap.data());
+                } else {
+                    console.log("No such document found in Firebase!");
+                }
+            } catch (error) {
+                console.error("Error fetching page content:", error);
+            }
+        };
+
+        fetchRecentProjects();
+        fetchPageContent();
+    }, []); // Empty array means "only run this once on load"
+    
     return (
         <>
             <div className="h-screen bg-[#0e0e0e] text-white relative overflow-hidden flex flex-col font-sans">
@@ -62,16 +131,16 @@ const LandingPage = () => {
                         
                         {/* Greeting: Cursive on mobile, standard on desktop */}
                         <p className="text-3xl md:text-4xl font-wonderfulDay mb-[-8px] text-gray-300 tracking-wider drop-shadow-md z-20">
-                            Hi, I'm Gowtham,
+                           {pageContent?.heroSection?.greeting +","|| "Hi, I'm Gowthamraja,"}
                         </p>
 
                         {/* Title: Tall Metallic Gradient on mobile, standard white on desktop */}
-                        <h1 className="text-[4.0rem] sm:text-[4.5rem] md:text-[5.5rem] lg:text-[7.5rem] tracking md:tracking-wide font-tusker leading-[1.0] md:leading-[1.05] mb-4 md:mb-6 text-transparent bg-clip-text bg-gradient-to-b from-[#ffffff] via-[#a1a1aa] to-[#3f3f46] md:text-white md:bg-none drop-shadow-2xl md:drop-shadow-none transform scale-y-110 md:scale-y-100 mt-2 z-20">
-                            I'M A FULLSTACK<br />DEVELOPER
+                        <h1 className="text-[4.0rem] sm:text-[4.5rem] md:text-[5.5rem] lg:text-[7.5rem] uppercase tracking md:tracking-wide font-tusker leading-[1.0] md:leading-[1.05] mb-4 md:mb-6 text-transparent bg-clip-text bg-gradient-to-b from-[#ffffff] via-[#a1a1aa] to-[#3f3f46] md:text-white md:bg-none drop-shadow-2xl md:drop-shadow-none transform scale-y-110 md:scale-y-100 mt-2 z-20">
+                           {pageContent?.heroSection?.title || "I'm a fullstack developer"}
                         </h1>
 
                         <p className="text-[#a1a1aa] text-[9.5px] sm:text-[11px] md:text-[14px] leading-[1.6] max-w-[95%] md:max-w-[480px] font-normal uppercase mb-6 md:mb-10 drop-shadow-lg md:drop-shadow-none tracking-wide z-20">
-                            I'M PASSIONATE ABOUT CREATING BEAUTIFUL, FUNCTIONAL, AND USER-FRIENDLY WEBSITES. I SPECIALIZE IN WEB DEVELOPMENT, UI/UX DESIGN, AND SOLVING REAL-WORLD PROBLEMS WITH CODE. LET'S BUILD SOMETHING AMAZING TOGETHER!
+                           {pageContent?.heroSection?.description || "I'M PASSIONATE ABOUT CREATING BEAUTIFUL, FUNCTIONAL, AND USER-FRIENDLY WEBSITES. I SPECIALIZE IN WEB DEVELOPMENT, UI/UX DESIGN, AND SOLVING REAL-WORLD PROBLEMS WITH CODE. LET'S BUILD SOMETHING AMAZING TOGETHER!"}
                         </p>
 
                         {/* DESKTOP: Thick underline button (Hidden on Mobile) */}
@@ -106,7 +175,7 @@ const LandingPage = () => {
                         ========================================= */}
                     <div className="absolute top-0 left-0 w-full h-[55%] sm:h-[65%] md:relative md:h-full md:w-1/2 flex justify-center md:justify-end items-end pointer-events-none z-10 pt-[5vh] md:pt-0">
                         <img
-                            src={main_hero}
+                            src={pageContent?.heroSection?.heroImage || main_hero}
                             alt="3D Avatar"
                             // Apply a fade-out mask on mobile so it blends into the text perfectly, remove mask on desktop
                             className="h-[90%] md:h-[85%] lg:h-[95%] object-contain object-bottom drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)] pointer-events-auto [mask-image:linear-gradient(to_bottom,black_80%,transparent_95%)] md:[mask-image:none]"
@@ -240,7 +309,7 @@ const LandingPage = () => {
                               spaceBetween={16} /* Slightly smaller gap on mobile looks better */
                               slidesPerView={1}
                               centeredSlides={false} 
-                              centerInsufficientSlides={true}
+                              centerInsufficientSlides={false}
                               navigation={true}
                               autoplay={{ delay: 2000, disableOnInteraction: true }}
                               breakpoints={{
@@ -252,45 +321,25 @@ const LandingPage = () => {
                               /* ✅ Added !px-2 for mobile so arrows sit nicely, and !pb-6 so cards don't get cut off at the bottom */
                               className="!pb-6 !px-2 md:!px-6"
                           >
-                              <SwiperSlide>
-                                  <ProjectCard 
-                                      imagePlaceholder="linear-gradient(45deg, #4ade80, #064e3b)"
-                                      title="Portfolio"
-                                      role="Frontend"
-                                      description="Developed to showcase my skills in web development, my portfolio website exemplifies proficiency in technologies such as ReactJS, CSS, and Figma."
-                                      techStack={[FaReact, FaJsSquare, FaCss3Alt, FaFigma]}
-                                  />
-                              </SwiperSlide>
-                              
-                              <SwiperSlide>
-                                  <ProjectCard 
-                                      imagePlaceholder="linear-gradient(45deg, #3b82f6, #1e3a8a)"
-                                      title="Weather App"
-                                      role="Full Stack"
-                                      description="Developed a full-stack weather app using NodeJS/Express for server-side logic and ReactJS/Handlebars for interactive frontend, delivering real-time data."
-                                      techStack={[FaReact, FaNodeJs, FaJsSquare, FaFigma]}
-                                  />
-                              </SwiperSlide>
+                              {/* C. Loop through our recentProjects state */}
+                              {recentProjects.map((project) => {
+                                  // Convert string icons to real icons
+                                  const mappedIcons = (project.techStack || []).map(iconName => iconMap[iconName]).filter(Boolean);
 
-                              <SwiperSlide>
-                                  <ProjectCard 
-                                      imagePlaceholder="linear-gradient(45deg, #a855f7, #4c1d95)"
-                                      title="Cred Clone"
-                                      role="Frontend"
-                                      description="Crafted a responsive CRED Landing Page clone using ReactJS for modularity and interactivity, styled with CSS to match the original design."
-                                      techStack={[FaReact, FaJsSquare, FaCss3Alt, FaFigma]}
-                                  />
-                              </SwiperSlide>
-
-                              <SwiperSlide>
-                                  <ProjectCard 
-                                      imagePlaceholder="linear-gradient(45deg, #a855f7, #4c1d95)"
-                                      title="Game developer"
-                                      role="Frontend"
-                                      description="Crafted a responsive CRED Landing Page clone using ReactJS for modularity and interactivity, styled with CSS to match the original design."
-                                      techStack={[FaReact, FaJsSquare, FaCss3Alt, FaFigma]}
-                                  />
-                              </SwiperSlide>
+                                  return (
+                                      <SwiperSlide key={project.id}>
+                                          <ProjectCard 
+                                              id={project.id} // Important for linking to the detail page!
+                                              mainImage={project.mainImage}
+                                              imagePlaceholder={project.bg || "linear-gradient(45deg, #1a1a1a, #2a2a2a)"}
+                                              title={project.title}
+                                              role={project.role}
+                                              description={project.description}
+                                              techStack={mappedIcons}
+                                          />
+                                      </SwiperSlide>
+                                      );
+                              })}
                               
                               {/* Add as many <SwiperSlide> wrappers as you need here! */}
 
