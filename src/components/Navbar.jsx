@@ -1,9 +1,19 @@
 import React from 'react';
 // Note: We removed the 'X' icon import since we no longer need a close button!
 import { FaGithub, FaLinkedin, FaGooglePlay } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const Navbar = () => {
+    // ✅ 2. Get the current URL path
+    const location = useLocation();
+    // ✅ 3. Helper function to check if a link is active
+    const isActive = (path) => {
+        // If it's the home page, it must be an exact match
+        if (path === '/') return location.pathname === '/';
+        // For other pages (like /projects), use startsWith so it stays highlighted 
+        // even if you click into a specific project details page!
+        return location.pathname.startsWith(path);
+    };
     return (
         <>
             {/* =========================================
@@ -29,10 +39,11 @@ const Navbar = () => {
                             {/* Desktop Menu & Icons (Hidden on Mobile) */}
                             <div className="hidden md:flex items-center space-x-12">
                                 <div className="flex space-x-8 text-[15px] font-medium text-gray-300">
-                                    <Link to="/" className="hover:text-white transition-colors">Home</Link>
-                                    <Link to="/projects" className="hover:text-white transition-colors">Projects</Link>
-                                    <Link to="/about" className="hover:text-white transition-colors">About</Link>
-                                    <Link to="/contact" className="hover:text-white transition-colors">Contacts</Link>
+                                    {/* ✅ 4. Desktop Links dynamically checking if they are active */}
+                                    <Link to="/" className={`transition-all duration-300 ${isActive('/') ? 'text-primary font-bold drop-shadow-[0_0_8px_rgba(139,92,246,0.6)]' : 'hover:text-white'}`}>Home</Link>
+                                    <Link to="/projects" className={`transition-all duration-300 ${isActive('/projects') ? 'text-primary font-bold drop-shadow-[0_0_8px_rgba(139,92,246,0.6)]' : 'hover:text-white'}`}>Projects</Link>
+                                    <Link to="/about" className={`transition-all duration-300 ${isActive('/about') ? 'text-primary font-bold drop-shadow-[0_0_8px_rgba(139,92,246,0.6)]' : 'hover:text-white'}`}>About</Link>
+                                    <Link to="/contact" className={`transition-all duration-300 ${isActive('/contact') ? 'text-primary font-bold drop-shadow-[0_0_8px_rgba(139,92,246,0.6)]' : 'hover:text-white'}`}>Contacts</Link>
                                 </div>
 
                                 {/* Social Icons */}
@@ -62,12 +73,13 @@ const Navbar = () => {
                     {/* Mobile Nav Links */}
                     <div className="relative z-30 px-2 py-4 flex justify-around items-center w-full text-[13px] font-bold text-gray-300">
                         {/* active:scale-95 gives a nice little "press" animation when tapped on phones */}
-                        <Link to="/" className="hover:text-white transition-colors w-full text-center py-2 active:scale-95">Home</Link>
-                        <Link to="/projects" className="hover:text-white transition-colors w-full text-center py-2 active:scale-95">Projects</Link>
-                        <Link to="/about" className="hover:text-white transition-colors w-full text-center py-2 active:scale-95">About</Link>
-                        <Link to="/contact" className="hover:text-white transition-colors w-full text-center py-2 active:scale-95">Contacts</Link>
-                    </div>
+                        {/* ✅ 5. Mobile Links dynamically updating. Added a slight scale-up effect for the active tab! */}
+                        <Link to="/" className={`transition-all duration-300 w-full text-center py-2 active:scale-95 ${isActive('/') ? 'text-primary scale-110 drop-shadow-[0_0_8px_rgba(139,92,246,0.5)]' : 'hover:text-white'}`}>Home</Link>
+                        <Link to="/projects" className={`transition-all duration-300 w-full text-center py-2 active:scale-95 ${isActive('/projects') ? 'text-primary scale-110 drop-shadow-[0_0_8px_rgba(139,92,246,0.5)]' : 'hover:text-white'}`}>Projects</Link>
+                        <Link to="/about" className={`transition-all duration-300 w-full text-center py-2 active:scale-95 ${isActive('/about') ? 'text-primary scale-110 drop-shadow-[0_0_8px_rgba(139,92,246,0.5)]' : 'hover:text-white'}`}>About</Link>
+                        <Link to="/contact" className={`transition-all duration-300 w-full text-center py-2 active:scale-95 ${isActive('/contact') ? 'text-primary scale-110 drop-shadow-[0_0_8px_rgba(139,92,246,0.5)]' : 'hover:text-white'}`}>Contacts</Link>
                 </div>
+                </div> {/* ✅ ADDED THIS: This closes the main wrapper div! */}
             </nav>
 
             {/* =========================================
