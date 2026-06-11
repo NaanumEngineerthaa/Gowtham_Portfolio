@@ -175,7 +175,7 @@ const LandingPage = () => {
                         ========================================= */}
                     <div className="absolute top-0 left-0 w-full h-[55%] sm:h-[65%] md:relative md:h-full md:w-1/2 flex justify-center md:justify-end items-end pointer-events-none z-10 pt-[5vh] md:pt-0">
                         <img
-                            src={pageContent?.heroSection?.heroImage || main_hero}
+                            src={pageContent?.heroSection?.heroImage}
                             alt="3D Avatar"
                             // Apply a fade-out mask on mobile so it blends into the text perfectly, remove mask on desktop
                             className="h-[90%] md:h-[85%] lg:h-[95%] object-contain object-bottom drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)] pointer-events-auto [mask-image:linear-gradient(to_bottom,black_80%,transparent_95%)] md:[mask-image:none]"
