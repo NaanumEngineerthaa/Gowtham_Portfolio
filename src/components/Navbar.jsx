@@ -1,12 +1,42 @@
-import React from 'react';
+
 // Note: We removed the 'X' icon import since we no longer need a close button!
 import { FaGithub, FaLinkedin, FaGooglePlay } from 'react-icons/fa';
 import { Link, useLocation } from 'react-router-dom';
+
+
+// 1. Add useState and useEffect
+import React, { useState, useEffect } from 'react';
+// 3. Import Firebase tools (Notice we added 'query' and 'limit' here!)
+import { collection, getDocs, query, limit, getDoc, doc} from "firebase/firestore"; 
+import { db } from '../firebase';
+
 
 const Navbar = () => {
     // ✅ 2. Get the current URL path
     const location = useLocation();
     // ✅ 3. Helper function to check if a link is active
+
+     const [socialLinks, setSocialLinks] = useState(null);
+
+     useEffect(() => {
+        const fetchSocialLinks = async () => {
+                   try {
+                       // Point directly to the "profiles" document inside "social_links"
+                       const docRef = doc(db, "social_links", "profiles");
+                       const docSnap = await getDoc(docRef);
+       
+                       if (docSnap.exists()) {
+                           setSocialLinks(docSnap.data());
+                       } else {
+                           console.log("No social links found in Firebase!");
+                       }
+                   } catch (error) {
+                       console.error("Error fetching social links:", error);
+                   }
+               };
+        fetchSocialLinks(); // ✅ Add this line to the end of your existing fetch functions
+    }, []);
+
     const isActive = (path) => {
         // If it's the home page, it must be an exact match
         if (path === '/') return location.pathname === '/';
@@ -48,9 +78,9 @@ const Navbar = () => {
 
                                 {/* Social Icons */}
                                 <div className="flex space-x-5 text-white">
-                                    <a href="#" className="hover:text-gray-400 transition-colors"><FaGithub size={18} /></a>
-                                    <a href="#" className="hover:text-gray-400 transition-colors"><FaLinkedin size={18} /></a>
-                                    <a href="#" className="hover:text-gray-400 transition-colors"><FaGooglePlay size={18} /></a>
+                                    <a href={socialLinks?.github || "#"} className="hover:text-gray-400 transition-colors"><FaGithub size={18} /></a>
+                                    <a href={socialLinks?.linkedin || "#"} className="hover:text-gray-400 transition-colors"><FaLinkedin size={18} /></a>
+                                    <a href={socialLinks?.playstore || "#"} className="hover:text-gray-400 transition-colors"><FaGooglePlay size={18} /></a>
                                 </div>
                             </div>
                         </div>

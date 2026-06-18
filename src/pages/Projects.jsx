@@ -1,28 +1,11 @@
 // import React from 'react';
 import React, { useState, useEffect } from 'react';
 import ProjectCard from '../components/ProjectCard';
-// Add whichever icons you need for your tech stack
-import { FaReact, FaJsSquare, FaCss3Alt, FaFigma, FaNodeJs, FaMobileAlt } from 'react-icons/fa';
-import { SiTailwindcss, SiExpress, SiMongodb } from 'react-icons/si';
-
+import { iconMap } from '../utils/iconMap';
 
 // 1. Import Firebase fetching tools
 import { collection, getDocs } from "firebase/firestore"; 
 import { db } from '../firebase'; // Make sure this points to your firebase.js file!
-
-// 3. The Icon Map: This translates the text from your database (e.g., "FaReact") into the actual visual icon component.
-const iconMap = {
-  FaReact: FaReact,
-  FaJsSquare: FaJsSquare,
-  FaCss3Alt: FaCss3Alt,
-  FaFigma: FaFigma,
-  FaNodeJs: FaNodeJs,
-  FaMobileAlt: FaMobileAlt,
-  SiTailwindcss: SiTailwindcss,
-  SiExpress: SiExpress,
-  SiMongodb: SiMongodb
-};
-
 
 const Projects = () => {
 

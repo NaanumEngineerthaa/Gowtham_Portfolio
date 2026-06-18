@@ -17,6 +17,14 @@
   font-style: normal;
   font-display: swap;
 }
+
+@font-face {
+  font-family: 'StylishClassyFont';
+  src: url('./assets/fonts/StylishClassyFont.ttf') format('truetype');
+  font-weight: 100;
+  font-style: italic;
+  font-display: swap;
+}
 /* Hide scrollbar for Chrome, Safari and Opera */
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
@@ -69,6 +77,8 @@ html ,body {
   --font-tusker: 'TuskerGrotesk', sans-serif; 
   /* ✅ ADD THIS LINE: This creates your 'font-wonderfulDay' class */
   --font-wonderfulDay: 'WonderfulDay', cursive;
+
+  --font-stylish: 'StylishClassyFont', cursive;
   /* --- YOUR CENTRAL THEME COLORS --- */
   /* This is a bright, neon violet */
   --color-primary: #8b5cf6; 

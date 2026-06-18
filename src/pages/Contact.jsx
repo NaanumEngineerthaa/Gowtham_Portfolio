@@ -1,6 +1,37 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
+import emailjs from '@emailjs/browser';
 
 const Contact = () => {
+  const form = useRef();
+  
+  // States for button text and success/error messages
+  const [isSending, setIsSending] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState('');
+
+  const sendEmail = (e) => {
+    e.preventDefault(); // Prevents the page from refreshing
+    setIsSending(true);
+    setSubmitMessage('');
+
+    // 🚨 REPLACE THESE 3 STRINGS WITH YOUR ACTUAL EMAILJS KEYS!
+    emailjs.sendForm(
+      'service_el7vozb',   // e.g., 'service_abc123'
+      'template_a7ae7pk',  // e.g., 'template_xyz456'
+      form.current, 
+      'awjM2tbkOZEBlTCzu'    // e.g., 'aBcDeFgHiJkLmNoPq'
+    )
+    .then((result) => {
+        console.log(result.text);
+        setIsSending(false);
+        setSubmitMessage('Message sent successfully! I will get back to you soon.');
+        e.target.reset(); // Clears the form after sending
+    }, (error) => {
+        console.log(error.text);
+        setIsSending(false);
+        setSubmitMessage('Oops! Something went wrong. Please try again.');
+    });
+  };
+
   return (
     <div className="min-h-screen bg-[#0e0e0e] text-white pt-32 pb-20 px-6 md:px-16 flex flex-col items-center font-sans">
       
@@ -26,15 +57,19 @@ const Contact = () => {
 
         {/* Right Side: Contact Form */}
         <div className="w-full lg:w-1/2">
-          <form className="flex flex-col gap-5">
+          
+          {/* ✅ Attached the ref and onSubmit handler here */}
+          <form ref={form} onSubmit={sendEmail} className="flex flex-col gap-5">
             
             {/* Name Field */}
             <div className="flex flex-col gap-2">
               <label htmlFor="name" className="font-bold text-sm md:text-base tracking-wide uppercase">Name</label>
               <input 
                 type="text" 
+                name="user_name" /* ✅ name attribute is required for EmailJS to map the variable */
                 id="name"
-                className="w-full p-3 rounded-sm  text-black bg-white border-none focus:outline-none focus:ring-2 focus:ring-black" 
+                required
+                className="w-full p-3 rounded-sm text-black bg-white border-none focus:outline-none focus:ring-2 focus:ring-black" 
               />
             </div>
 
@@ -43,7 +78,21 @@ const Contact = () => {
               <label htmlFor="email" className="font-bold text-sm md:text-base tracking-wide uppercase">Email</label>
               <input 
                 type="email" 
+                name="user_email" /* ✅ name attribute is required */
                 id="email"
+                required
+                className="w-full p-3 rounded-sm text-black bg-white border-none focus:outline-none focus:ring-2 focus:ring-black" 
+              />
+            </div>
+
+            {/* ✅ NEW Phone Field */}
+            <div className="flex flex-col gap-2">
+              <label htmlFor="phone" className="font-bold text-sm md:text-base tracking-wide uppercase">Phone Number</label>
+              <input 
+                type="tel" 
+                name="user_phone" /* MUST match the {{user_phone}} in EmailJS */
+                id="phone"
+                required
                 className="w-full p-3 rounded-sm text-black bg-white border-none focus:outline-none focus:ring-2 focus:ring-black" 
               />
             </div>
@@ -53,18 +102,30 @@ const Contact = () => {
               <label htmlFor="message" className="font-bold text-sm md:text-base tracking-wide uppercase">Message</label>
               <textarea 
                 id="message"
+                name="message" /* ✅ name attribute is required */
                 rows="6" 
+                required
                 className="w-full p-3 rounded-sm bg-white text-black border-none focus:outline-none focus:ring-2 focus:ring-black resize-none"
               ></textarea>
             </div>
 
-            {/* Submit Button */}
-            <button 
-              type="submit" 
-              className="w-full bg-primary border-2 border-white text-white font-bold text-lg py-3 rounded-md mt-2 hover:bg-white hover:text-primary transition-colors shadow-lg"
-            >
-              Send
-            </button>
+            {/* Submit Button & Status Message */}
+            <div className="mt-2">
+              <button 
+                type="submit" 
+                disabled={isSending}
+                className="w-full bg-primary border-2 border-white text-white font-bold text-lg py-3 rounded-md hover:bg-white hover:text-primary transition-colors shadow-lg disabled:opacity-70 disabled:cursor-not-allowed"
+              >
+                {isSending ? 'Sending...' : 'Send'}
+              </button>
+
+              {/* Display success or error message below the button */}
+              {submitMessage && (
+                <p className="mt-4 text-center font-medium text-white tracking-wide">
+                  {submitMessage}
+                </p>
+              )}
+            </div>
             
           </form>
         </div>

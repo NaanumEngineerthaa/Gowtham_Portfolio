@@ -31,8 +31,10 @@ const ProjectCard = ({ id,mainImage, imagePlaceholder, title, role, description,
             </p>
             
             <div className="flex gap-3 text-2xl text-gray-300">
-                {techStack.map((Icon, index) => (
-                    <Icon key={index} className="hover:text-primary transition-colors cursor-pointer" />
+                {techStack.map((icon, index) => (
+                    <span key={index} className="flex items-center justify-center text-[1.2rem] md:text-[1.5rem]">
+                        {icon}
+                    </span>
                 ))}
             </div>
             </div>

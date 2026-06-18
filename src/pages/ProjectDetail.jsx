@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { FaArrowLeft, FaReact, FaJsSquare, FaCss3Alt, FaFigma, FaGithub, FaDesktop, FaNodeJs, FaMobileAlt } from 'react-icons/fa';
-import { SiExpress, SiTailwindcss, SiMongodb } from 'react-icons/si';
+import { FaArrowLeft, FaGithub, FaDesktop} from 'react-icons/fa';
+import { iconMap } from '../utils/iconMap';
 
 // ✅ 1. ADD SWIPER IMPORTS HERE
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -13,18 +13,6 @@ import 'swiper/css/navigation';
 import { doc, getDoc } from "firebase/firestore";
 import { db } from '../firebase'; 
 
-// ✅ 2. Bring back the Icon Map to convert DB text strings into real icons
-const iconMap = {
-  FaReact: FaReact,
-  FaJsSquare: FaJsSquare,
-  FaCss3Alt: FaCss3Alt,
-  FaFigma: FaFigma,
-  FaNodeJs: FaNodeJs,
-  FaMobileAlt: FaMobileAlt,
-  SiTailwindcss: SiTailwindcss,
-  SiExpress: SiExpress,
-  SiMongodb: SiMongodb
-};
 
 const ProjectDetail = () => {
   // Grab the ID from the URL (e.g., "xynema")[cite: 8]
@@ -123,10 +111,12 @@ const ProjectDetail = () => {
             </p>
 
             <h3 className="text-xl font-bold text-white mb-4">Tech Stack</h3>
-            <div className="flex gap-3 text-3xl text-gray-300 mb-8">
-              {/* ✅ 8. Use the mappedIcons array instead of the raw database text */}
-              {mappedIcons.map((Icon, index) => (
-                <Icon key={index} className="hover:text-primary transition-colors cursor-pointer" />
+            <div className="flex gap-3 mb-8">
+              {/* ✅ Replaced the <Icon /> component rendering with direct variable output */}
+              {mappedIcons.map((icon, index) => (
+                <span key={index} className="flex items-center justify-center text-[2rem]">
+                  {icon}
+                </span>
               ))}
             </div>
 

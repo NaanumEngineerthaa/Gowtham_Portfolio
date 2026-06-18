@@ -3,9 +3,9 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
-import { SiTailwindcss, SiExpress, SiMongodb } from 'react-icons/si';
-import { FaInstagram, FaGithub, FaLinkedin, FaYoutube, FaPaperPlane, FaReact, FaJsSquare, FaCss3Alt, FaFigma, FaNodeJs, FaLongArrowAltDown, FaGooglePlay, FaMobileAlt } from 'react-icons/fa';// (Adjust the '../' path if your LandingPage is not inside a 'pages' folder)
+import { FaInstagram, FaGithub, FaLinkedin, FaYoutube, FaPaperPlane,FaLongArrowAltDown, FaGooglePlay, FaMobileAlt } from 'react-icons/fa';// (Adjust the '../' path if your LandingPage is not inside a 'pages' folder)
 import ProjectCard from '../components/ProjectCard';
+import { iconMap } from '../utils/iconMap';
 
 // Import your avatar and your new smoke background here
 import main_hero from '../assets/Main_Hero.png';
@@ -19,24 +19,14 @@ import React, { useState, useEffect } from 'react';
 import { collection, getDocs, query, limit, getDoc, doc} from "firebase/firestore"; 
 import { db } from '../firebase';
 
-// 4. The Icon Map: Translates DB strings ("FaReact") into real React components
-const iconMap = {
-  FaReact: FaReact,
-  FaJsSquare: FaJsSquare,
-  FaCss3Alt: FaCss3Alt,
-  FaFigma: FaFigma,
-  FaNodeJs: FaNodeJs,
-  FaMobileAlt: FaMobileAlt,
-  SiTailwindcss: SiTailwindcss,
-  SiExpress: SiExpress,
-  SiMongodb: SiMongodb
-};
 
 const LandingPage = () => {
     // A. State to hold our 4 projects
     const [recentProjects, setRecentProjects] = useState([]);
     // ✅ 1. Add state to hold the landing page content
     const [pageContent, setPageContent] = useState(null);
+
+    const [socialLinks, setSocialLinks] = useState(null);
 
     // B. useEffect runs this code once when the page loads
     useEffect(() => {
@@ -79,8 +69,26 @@ const LandingPage = () => {
             }
         };
 
+        // ✅ Add the new fetch function for social links
+        const fetchSocialLinks = async () => {
+            try {
+                // Point directly to the "profiles" document inside "social_links"
+                const docRef = doc(db, "social_links", "profiles");
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    setSocialLinks(docSnap.data());
+                } else {
+                    console.log("No social links found in Firebase!");
+                }
+            } catch (error) {
+                console.error("Error fetching social links:", error);
+            }
+        };
+
         fetchRecentProjects();
         fetchPageContent();
+        fetchSocialLinks();
     }, []); // Empty array means "only run this once on load"
     
     return (
@@ -197,26 +205,43 @@ const LandingPage = () => {
               <section className="relative flex flex-col items-center justify-center w-full px-6 py-16 md:py-0 min-h-[80vh] md:min-h-screen">
                 
                {/* Background Outlined Text (Watermark) */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center overflow-hidden z-0 pointer-events-none opacity-30 [mask-image:linear-gradient(to_right,transparent,black_20%,black_80%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_20%,black_80%,transparent)]">
+                <div className="absolute inset-0 flex flex-col items-center justify-center overflow-hidden z-0 uppercase pointer-events-none opacity-30 [mask-image:linear-gradient(to_right,transparent,black_20%,black_80%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_20%,black_80%,transparent)]">
                     
-                     {/* Bottom Text: Continuously Moving LEFT */}
-                    <h1 className="md:hidden animate-marquee-left text-[10rem] md:text-[14rem] lg:text-[18rem] font-tusker text-primary/8 whitespace-nowrap leading-[0.95] [-webkit-text-stroke:2px_var(--color-primary)] mt-2 md:mt-0">
-                         FRONT END DEVELOPER FRONT END DEVELOPER FRONT END DEVELOPER FRONT END DEVELOPER FRONT END DEVELOPER FRONT END DEVELOPER FRONT END DEVELOPER FRONT END DEVELOPER FRONT END DEVELOPER FRONT END DEVELOPER FRONT END DEVELOPER FRONT END DEVELOPER 
+                    {/* Line 1: Continuously Moving LEFT */}
+                    {/* ✅ Speed Control: 20s (Faster) */}
+                    <h1 
+                        className="md:hidden animate-marquee-left text-[10rem] md:text-[14rem] lg:text-[18rem] font-tusker text-primary/8 whitespace-nowrap leading-[0.95] [-webkit-text-stroke:2px_var(--color-primary)] mt-2 md:mt-0"
+                        style={{ animationDuration: '20s' }} 
+                    >
+                        {/* ✅ .repeat(20) multiplies the string 20 times automatically! \u00A0 adds safe spaces between words. */}
+                        {`${pageContent?.introSection?.flowAnimation?.topFlow || "3D ARTIST"}\u00A0`.repeat(20)}
                     </h1>
 
-                    {/* Top Text: Continuously Moving RIGHT */}
-                    <h1 className="animate-marquee-right text-[8rem] md:text-[14rem] lg:text-[18rem] font-tusker text-primary/8 whitespace-nowrap leading-[0.95] [-webkit-text-stroke:2px_var(--color-primary)]">
-                        UI DESIGNER UI DESIGNER UI DESIGNER UI DESIGNER UI DESIGNER UI DESIGNER UI DESIGNER UI DESIGNER 
+                    {/* Line 2: Continuously Moving RIGHT */}
+                    {/* ✅ Speed Control: 35s (Medium) */}
+                    <h1 
+                        className="animate-marquee-right text-[8rem] md:text-[14rem] lg:text-[18rem] font-tusker text-primary/8 whitespace-nowrap leading-[0.95] [-webkit-text-stroke:2px_var(--color-primary)]"
+                        style={{ animationDuration: '45s' }}
+                    >
+                        {`${pageContent?.introSection?.flowAnimation?.topCenter || "Game Developer"}\u00A0`.repeat(20)}
                     </h1>
                     
-                    {/* Bottom Text: Continuously Moving LEFT */}
-                    <h1 className="animate-marquee-left text-[8rem] md:text-[14rem] lg:text-[18rem] font-tusker text-primary/8 whitespace-nowrap leading-[0.95] [-webkit-text-stroke:2px_var(--color-primary)] mt-2 md:mt-0">
-                        FRONT END DEVELOPER FRONT END DEVELOPER FRONT END DEVELOPER FRONT END DEVELOPER FRONT END DEVELOPER 
+                    {/* Line 3: Continuously Moving LEFT */}
+                    {/* ✅ Speed Control: 45s (Slower) */}
+                    <h1 
+                        className="animate-marquee-left text-[8rem] md:text-[14rem] lg:text-[18rem] font-tusker text-primary/8 whitespace-nowrap leading-[0.95] [-webkit-text-stroke:2px_var(--color-primary)] mt-2 md:mt-0"
+                        style={{ animationDuration: '65s' }}
+                    >
+                        {`${pageContent?.introSection?.flowAnimation?.bottomCenter || "Full Stack Developer"}\u00A0`.repeat(20)}
                     </h1>
 
-                    {/* Top Text: Continuously Moving RIGHT */}
-                    <h1 className="md:hidden animate-marquee-right text-[10rem] md:text-[14rem] lg:text-[18rem] font-tusker text-primary/8 whitespace-nowrap leading-[0.95] [-webkit-text-stroke:2px_var(--color-primary)]">
-                        UI DESIGNER UI DESIGNER UI DESIGNER UI DESIGNER UI DESIGNER UI DESIGNER UI DESIGNER UI DESIGNER UI DESIGNER UI DESIGNER UI DESIGNER UI DESIGNER UI DESIGNER UI DESIGNER UI DESIGNER UI DESIGNER 
+                    {/* Line 4: Continuously Moving RIGHT */}
+                    {/* ✅ Speed Control: 25s (Fast) */}
+                    <h1 
+                        className="md:hidden animate-marquee-right text-[10rem] md:text-[14rem] lg:text-[18rem] font-tusker text-primary/8 whitespace-nowrap leading-[0.95] [-webkit-text-stroke:2px_var(--color-primary)]"
+                        style={{ animationDuration: '25s' }}
+                    >
+                        {`${pageContent?.introSection?.flowAnimation?.bottomFlow || "UI DESIGNER"}\u00A0`.repeat(20)}
                     </h1>
 
                 </div>
@@ -224,30 +249,46 @@ const LandingPage = () => {
                 {/* Foreground Content */}
                 <div className="relative z-10 flex flex-col items-center text-center">
                     <p className="text-white text-[16px] md:text-2xl font-medium mb-[10px] md:mb-[20px] tracking-wide">
-                        Hey There I'm
+                        {pageContent?.introSection?.greeting || "Hey There I'm"}
                     </p>
                     
-                    {/* ✅ Responsive Name: 5.5rem on mobile fits perfectly, scales up to 12rem on desktop */}
-                    <h1 className="text-[5.5rem] sm:text-[7rem] md:text-[12rem] lg:text-[15rem] text-primary font-tusker leading-none uppercase">
-                        Gowtham
-                    </h1>
-                    
-                    <p className="text-gray-300 text-[13px] md:text-lg lg:text-xl font-light mt-2 md:mt-4 tracking-wider">
-                        Currently Working as Fullstack Developer
-                    </p>
-        
-                    {/* Social Icons */}
-                    <div className="flex space-x-3 md:space-x-8 mt-1 md:mt-8 items-center justify-center">
-                        <a href="#" className="text-primary hover:text-white transition-colors transform hover:scale-110">
-                            {/* ✅ Used Tailwind sizing so they can be slightly smaller on phones */}
-                            <FaLinkedin className="w-8 h-8 md:w-10 md:h-10" />
-                        </a>
-                        <a href="#" className="text-primary hover:text-white transition-colors transform hover:scale-110">
-                            <FaGithub className="w-8 h-8 md:w-10 md:h-10" />
-                        </a>
-                        <a href="#" className="text-primary hover:text-white transition-colors transform hover:scale-110">
-                            <FaYoutube className="w-10 h-10 md:w-12 md:h-12" />
-                        </a>
+                    {/* ✅ RELATIVE WRAPPER: This acts as the anchor for the overlapping text */}
+                    <div className="relative inline-block mt-[-10px] md:mt-0">
+                        
+                        {/* 1. The Background Block Text */}
+                        {/* Note: I left this as text-primary (purple), but change to text-white if you want it to perfectly match your reference image! */}
+                        <h1 className="text-[5.5rem] sm:text-[7rem] md:text-[12rem] lg:text-[15rem] text-primary font-tusker leading-none uppercase relative z-10">
+                           {pageContent?.introSection?.mainName || "Gowtham"}
+                        </h1>
+                        
+                        {/* 2. The Overlapping Cursive Text ("Raja") */}
+                        {/* Adjust the left-[%] and bottom-[%] values to nudge it exactly where you want it */}
+                        <span className="absolute z-20 font-stylish text-white/80 text-[2.5rem] sm:text-[3rem] md:text-[5rem] lg:text-[6rem] bottom-[-20%] md:bottom-[-20%]  leading-none drop-shadow-lg pointer-events-none">
+                            {pageContent?.introSection?.cursiveName || "Raja"}
+                        </span>
+
+                    </div>
+                    <div className="absolute top-[130%] z-50">
+                        {/* ✅ Added extra top margin (mt-6 md:mt-8) so the overlapping text doesn't touch this paragraph */}
+                        <p className="text-gray-300 text-[13px] md:text-lg lg:text-xl font-light mt-6 md:mt-8 tracking-wider relative z-20">
+                            {pageContent?.introSection?.role || "Currently Working as Fullstack Developer"}
+                        </p>
+            
+                        {/* Social Icons */}
+                        <div className="flex space-x-3 md:space-x-8 mt-1 md:mt-8 items-center justify-center">
+                            <a href={socialLinks?.linkedin || "#"} target="_blank" rel="noopener noreferrer" className="text-primary hover:text-white transition-colors transform hover:scale-110">
+                                <FaLinkedin className="w-8 h-8 md:w-10 md:h-10" />
+                            </a>
+                            <a href={socialLinks?.github || "#"} target="_blank" rel="noopener noreferrer" className="text-primary hover:text-white transition-colors transform hover:scale-110">
+                                <FaGithub className="w-8 h-8 md:w-10 md:h-10" />
+                            </a>
+                            <a href={socialLinks?.youtube || "#"} target="_blank" rel="noopener noreferrer" className="text-primary hover:text-white transition-colors transform hover:scale-110">
+                                <FaYoutube className="w-10 h-10 md:w-12 md:h-12" />
+                            </a>
+                            <a href={socialLinks?.playstore || "#"} target="_blank" rel="noopener noreferrer" className="text-primary hover:text-white transition-colors transform hover:scale-110">
+                                <FaGooglePlay className="w-8 h-8 md:w-10 md:h-10" />
+                            </a>
+                        </div>
                     </div>
                 </div>
               </section>
@@ -265,11 +306,8 @@ const LandingPage = () => {
                       </h2>
             
                       {/* ✅ Added text-center for mobile, kept text-left for desktop */}
-                      <p className="text-[14px] md:text-[16px] lg:text-[18px] leading-[1.5] font-medium text-justify md:text-left mb-8 md:mb-12">
-                        Hi there! I'm Gowtham, a Fullstack Developer with a passion for crafting user-centric experiences. 
-                        I specialize in UI/UX design, front-end development, and backend systems. I thrive on collaboration 
-                        and bring experience in agile methodologies. Beyond coding, I enjoy exploring new technologies and 
-                        building tools that solve real-world problems. Let's connect and bring your digital visions to life.
+                      <p className="text-[14px] md:text-[16px] lg:text-[18px] leading-[1.5] font-medium text-justify md:text-justify mb-8 md:mb-12">
+                        {pageContent?.aboutSection?.about || "Gowtham"}
                       </p>
 
                       {/* ✅ Changed to justify-center on mobile, kept justify-end on desktop */}
@@ -372,11 +410,11 @@ const LandingPage = () => {
                             <p className="font-bold mb-4 md:mb-3 text-lg md:text-xl">Follow me on</p>
                             <div className="flex justify-center md:justify-end space-x-6 md:space-x-4">
                                 {/* ✅ Used Tailwind sizing so icons are larger and easier to tap on phones */}
-                                <a href="#" className="hover:text-black transition-colors transform hover:scale-110"><FaInstagram className="w-8 h-8 md:w-7 md:h-7" /></a>
-                                <a href="#" className="hover:text-black transition-colors transform hover:scale-110"><FaYoutube className="w-9 h-9 md:w-8 md:h-8" /></a>
-                                <a href="#" className="hover:text-black transition-colors transform hover:scale-110"><FaLinkedin className="w-8 h-8 md:w-7 md:h-7" /></a>
-                                <a href="#" className="hover:text-black transition-colors transform hover:scale-110"><FaGithub className="w-8 h-8 md:w-7 md:h-7" /></a>
-                                <a href="#" className="hover:text-black transition-colors transform hover:scale-110"><FaGooglePlay className="w-8 h-8 md:w-7 md:h-7" /></a>
+                                <a href={socialLinks?.instagram || "#"} target="_blank" rel="noopener noreferrer" className="hover:text-black transition-colors transform hover:scale-110"><FaInstagram className="w-8 h-8 md:w-7 md:h-7" /></a>
+                                <a href={socialLinks?.youtube || "#"} target="_blank" rel="noopener noreferrer" className="hover:text-black transition-colors transform hover:scale-110"><FaYoutube className="w-9 h-9 md:w-8 md:h-8" /></a>
+                                <a href={socialLinks?.linkedin || "#"} target="_blank" rel="noopener noreferrer" className="hover:text-black transition-colors transform hover:scale-110"><FaLinkedin className="w-8 h-8 md:w-7 md:h-7" /></a>
+                                <a href={socialLinks?.github || "#"} target="_blank" rel="noopener noreferrer" className="hover:text-black transition-colors transform hover:scale-110"><FaGithub className="w-8 h-8 md:w-7 md:h-7" /></a>
+                                <a href={socialLinks?.playstore || "#"} target="_blank" rel="noopener noreferrer" className="hover:text-black transition-colors transform hover:scale-110"><FaGooglePlay className="w-8 h-8 md:w-7 md:h-7" /></a>
 
                             </div>
                         </div>
