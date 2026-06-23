@@ -1,5 +1,9 @@
 import React, { useRef, useState } from 'react';
 import emailjs from '@emailjs/browser';
+// tempory DB duplicate purpose
+import { doc, getDoc, setDoc } from "firebase/firestore"; 
+import { db } from '../firebase';
+
 
 const Contact = () => {
   const form = useRef();
@@ -31,6 +35,28 @@ const Contact = () => {
         setSubmitMessage('Oops! Something went wrong. Please try again.');
     });
   };
+
+
+
+// Temporary function to duplicate a document
+const duplicateDocument = async () => {
+  try {
+    // 1. Read the original "portfolio" document
+    const originalRef = doc(db, "projects", "xynema");
+    const originalSnap = await getDoc(originalRef);
+
+    if (originalSnap.exists()) {
+      // 2. Create a NEW document named "xynema" (or whatever you want)
+      const newRef = doc(db, "projects", "excel_odyssey");
+      
+      // 3. Write the exact same data to the new document
+      await setDoc(newRef, originalSnap.data());
+      alert("Document duplicated perfectly! Check Firebase.");
+    }
+  } catch (error) {
+    console.error("Error duplicating: ", error);
+  }
+};
 
   return (
     <div className="min-h-screen bg-[#0e0e0e] text-white pt-32 pb-20 px-6 md:px-16 flex flex-col items-center font-sans">
@@ -126,6 +152,9 @@ const Contact = () => {
                 </p>
               )}
             </div>
+            
+            {/* Temporary function to duplicate a document */}
+            {/* <button onClick={duplicateDocument} className="bg-white text-black p-4 m-4 visible">Duplicate Doc</button> */}
             
           </form>
         </div>

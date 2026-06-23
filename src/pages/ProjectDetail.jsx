@@ -82,53 +82,92 @@ const ProjectDetail = () => {
           <FaArrowLeft size={14} /> Back
         </Link>
 
-        {/* HERO SECTION */}
-        <div className="bg-[#141417] rounded-md p-6 lg:p-10 shadow-xl border border-white/5 flex flex-col lg:flex-row gap-10">
+        {/* HERO SECTION (Side-by-Side Flex Layout) */}
+        <div className="bg-[#141417] rounded-md p-6 lg:p-10 shadow-xl border border-white/5">
           
-          {/* ✅ 7. Dynamic Background Image or Title Gradient */}
-          {project.mainImage ? (
-            <img 
-              src={project.mainImage} 
-              alt={project.title} 
-              className="w-full lg:w-[55%] aspect-video rounded-md object-cover shadow-inner" 
-            />
-          ) : (
-            <div 
-              className="w-full lg:w-[55%] aspect-video rounded-md flex items-center justify-center font-tusker text-4xl tracking-widest text-black shadow-inner overflow-hidden relative" 
-              style={{ background: project.bg || "linear-gradient(45deg, #141417, #22222a)" }}
-            >
-              {project.title.toUpperCase()}
-            </div>
-          )}
-
-          <div className="w-full lg:w-[45%] flex flex-col justify-center">
-            {/* Dynamic Text Details */}
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-2 tracking-wide">{project.title}</h1>
-            <span className="text-primary text-lg font-semibold mb-4">{project.role}</span>
+          {/* TOP PART: Image Left, Info Right */}
+          <div className="flex flex-col lg:flex-row gap-8 lg:gap-10 mb-8">
             
-            <p className="text-gray-400 text-[15px] leading-relaxed mb-6">
-              {project.description}
-            </p>
-
-            <h3 className="text-xl font-bold text-white mb-4">Tech Stack</h3>
-            <div className="flex gap-3 mb-8">
-              {/* ✅ Replaced the <Icon /> component rendering with direct variable output */}
-              {mappedIcons.map((icon, index) => (
-                <span key={index} className="flex items-center justify-center text-[2rem]">
-                  {icon}
-                </span>
-              ))}
+            {/* Left: Project Image (Locked to 16:9) */}
+            <div className="w-full lg:w-[55%] aspect-video bg-[#22222a] rounded-sm overflow-hidden relative shadow-lg">
+              {project.mainImage ? (
+                <img 
+                  src={project.mainImage} 
+                  alt={project.title} 
+                  className="w-full h-full object-cover object-center absolute inset-0" 
+                />
+              ) : (
+                <div 
+                  className="w-full h-full absolute inset-0 flex items-center justify-center font-tusker text-4xl tracking-widest text-black shadow-inner" 
+                  style={{ background: project.bg || "linear-gradient(45deg, #141417, #22222a)" }}
+                >
+                  {project.title.toUpperCase()}
+                </div>
+              )}
             </div>
 
-            <div className="flex gap-4">
-              <a href={project.demoLink || "#"} className="flex-1 flex items-center justify-center gap-2 bg-primary text-white py-3 rounded-lg font-bold hover:bg-white hover:text-primary transition-colors shadow-lg">
-                <FaDesktop /> Demo
-              </a>
-              <a href={project.githubLink || "#"} className="flex-1 flex items-center justify-center gap-2 bg-[#22222a] border border-white/10 text-white py-3 rounded-lg font-bold hover:bg-white hover:text-black transition-colors shadow-lg">
-                <FaGithub /> GitHub
-              </a>
+            {/* Right: Title, Role, Tech Stack, & Buttons */}
+            <div className="w-full lg:w-[45%] flex flex-col justify-center">
+              
+              <h1 className="text-4xl md:text-5xl font-bold text-white mb-2 tracking-wide">
+                {project.title}
+              </h1>
+              <span className="text-primary text-lg font-semibold block mb-8">
+                {project.role}
+              </span>
+              
+              {/* Tech Stack */}
+              {/* Tech Stack */}
+              <h3 className="text-xl font-bold text-white mb-4">Tech Stack</h3>
+              
+              <div className="flex gap-4 mb-10 flex-wrap">
+                {(project.techStack || []).map((techName, index) => {
+                  
+                  // Grab the matching icon graphic from your dictionary
+                  const icon = iconMap[techName];
+                  if (!icon) return null; // Skips if the icon isn't found
+                  
+                  return (
+                    // ✅ Added 'group' class to trigger the hover effect on children
+                    <div key={index} className="relative group flex items-center justify-center cursor-pointer">
+                      
+                      {/* The Icon Graphic */}
+                      <span className="text-[2.2rem]">
+                        {icon}
+                      </span>
+                      
+                      {/* ✅ The Custom Hover Tooltip */}
+                      {/* Hidden by default (opacity-0), fades in on hover (group-hover:opacity-100) */}
+                      <span className="absolute bottom-full mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 w-max bg-[#22222a] border border-white/10 text-white text-xs font-semibold px-3 py-1.5 rounded shadow-lg pointer-events-none z-50">
+                        {techName}
+                      </span>
+                      
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4 w-full mt-auto">
+                <a href={project.demoLink || "#"} target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center justify-center gap-2 bg-primary text-white py-3.5 rounded-lg font-bold hover:bg-white hover:text-primary transition-colors shadow-lg">
+                  <FaDesktop /> Demo
+                </a>
+                <a href={project.githubLink || "#"} target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center justify-center gap-2 bg-[#22222a] border border-white/10 text-white py-3.5 rounded-lg font-bold hover:bg-white hover:text-black transition-colors shadow-lg">
+                  <FaGithub /> GitHub
+                </a>
+              </div>
+
             </div>
           </div>
+
+          {/* BOTTOM PART: Full-width Description */}
+          <div className="pt-8 border-t border-white/10">
+            <h3 className="text-2xl font-bold text-white mb-4">About Project</h3>
+            <div className="text-gray-300 text-[15px] md:text-[16px] leading-[1.8] font-light text-justify whitespace-pre-line">
+              {project.description}
+            </div>
+          </div>
+
         </div>
 
         {/* DYNAMIC FEATURES SECTION */}
@@ -193,23 +232,24 @@ const ProjectDetail = () => {
           </div>
           
         )}
-        {/* ✅ 3. ADD THIS FULLSCREEN MODAL OVERLAY HERE */}
+        {/* ✅ 3. FULLSCREEN MODAL OVERLAY (Mobile Fixed) */}
         {selectedImage && (
           <div 
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 md:p-10 backdrop-blur-sm cursor-zoom-out"
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 p-0 md:p-10 backdrop-blur-md cursor-zoom-out"
             onClick={() => setSelectedImage(null)} // Close when clicking the background
           >
-            {/* Close Button */}
+            {/* Close Button (Pinned Top Right) */}
             <button 
-              className="absolute top-6 right-6 md:top-10 md:right-10 text-white text-5xl hover:text-primary transition-colors cursor-pointer"
+              className="absolute top-4 right-4 md:top-8 md:right-8 text-white/80 hover:text-primary text-5xl md:text-6xl transition-colors cursor-pointer z-[202]"
               onClick={() => setSelectedImage(null)}
             >
               &times;
             </button>
 
-            {/* PREVIOUS Arrow Button */}
+            {/* PREVIOUS Arrow Button (Pinned Left) */}
+            {/* ✅ Added absolute left-2 top-1/2 and -translate-y-1/2 to perfectly center on the left edge */}
             <button 
-              className="text-white text-5xl md:text-7xl hover:text-primary transition-colors cursor-pointer p-4 z-[201]"
+              className="absolute left-1 md:left-8 top-1/2 transform -translate-y-1/2 text-white/60 hover:text-white text-5xl md:text-7xl transition-colors cursor-pointer p-2 md:p-4 z-[201]"
               onClick={(e) => {
                 e.stopPropagation(); // Stops the modal from closing
                 const currentIndex = project.screenshots.indexOf(selectedImage);
@@ -218,20 +258,22 @@ const ProjectDetail = () => {
                 setSelectedImage(project.screenshots[prevIndex]);
               }}
             >
-              &#10094; {/* This creates a bold < symbol */}
+              &#10094;
             </button>
 
             {/* The Fullscreen Image */}
+            {/* ✅ Shrunk the max-width slightly (max-w-[85vw]) so the image doesn't completely overlap the arrows on small screens */}
             <img 
               src={selectedImage} 
               alt="Fullscreen screenshot" 
-              className="max-w-full max-h-full object-contain rounded-md shadow-2xl cursor-default"
+              className="max-w-[85vw] md:max-w-[80vw] max-h-[85vh] object-contain rounded-sm shadow-2xl cursor-default"
               onClick={(e) => e.stopPropagation()} // Prevents the modal from closing if you click the image itself
             />
 
-             {/* NEXT Arrow Button */}
+             {/* NEXT Arrow Button (Pinned Right) */}
+             {/* ✅ Added absolute right-2 top-1/2 to perfectly center on the right edge */}
             <button 
-              className="text-white text-5xl md:text-7xl hover:text-primary transition-colors cursor-pointer p-4 z-[201]"
+              className="absolute right-1 md:right-8 top-1/2 transform -translate-y-1/2 text-white/60 hover:text-white text-5xl md:text-7xl transition-colors cursor-pointer p-2 md:p-4 z-[201]"
               onClick={(e) => {
                 e.stopPropagation(); // Stops the modal from closing
                 const currentIndex = project.screenshots.indexOf(selectedImage);
@@ -240,7 +282,7 @@ const ProjectDetail = () => {
                 setSelectedImage(project.screenshots[nextIndex]);
               }}
             >
-              &#10095; {/* This creates a bold > symbol */}
+              &#10095;
             </button>
           </div>
         )}
