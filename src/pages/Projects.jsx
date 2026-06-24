@@ -23,7 +23,9 @@ const Projects = () => {
         
         // Loop through the database documents and push them into our array
         querySnapshot.forEach((doc) => {
+          if (doc.id !== "xynema") {
           projectsData.push({ id: doc.id, ...doc.data() });
+          }
         });
         
         // Save the data to React state
