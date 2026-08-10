@@ -154,7 +154,7 @@ const duplicateDocument = async () => {
             </div>
             
             {/* Temporary function to duplicate a document */}
-             <button onClick={duplicateDocument} className="bg-white text-black p-4 m-4 display:none">Duplicate Doc</button>
+             <button onClick={duplicateDocument} className="bg-white text-black p-4 m-4 display:hidden">Duplicate Doc</button>
             
           </form>
         </div>
