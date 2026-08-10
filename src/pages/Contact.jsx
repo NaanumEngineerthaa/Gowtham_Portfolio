@@ -47,7 +47,7 @@ const duplicateDocument = async () => {
 
     if (originalSnap.exists()) {
       // 2. Create a NEW document named "xynema" (or whatever you want)
-      const newRef = doc(db, "projects", "excel_odyssey");
+      const newRef = doc(db, "projects", "Facebook-clone");
       
       // 3. Write the exact same data to the new document
       await setDoc(newRef, originalSnap.data());
